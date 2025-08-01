@@ -27,7 +27,7 @@ services:
             BRAINTREE_PRIVATE_KEY: ${BRAINTREE_PRIVATE_KEY}
             BRAINTREE_PUBLIC_KEY: ${BRAINTREE_PUBLIC_KEY}
             COOKIE_SECRET: ${COOKIE_SECRET}
-            DB_HOST: 172.245.234.230
+            DB_HOST: ${DB_HOST}
             DB_PORT: ${DB_PORT}
             DB_NAME: ${DB_NAME}
             DB_USERNAME: ${DB_USERNAME}
@@ -60,7 +60,7 @@ services:
             BRAINTREE_PRIVATE_KEY: ${BRAINTREE_PRIVATE_KEY}
             BRAINTREE_PUBLIC_KEY: ${BRAINTREE_PUBLIC_KEY}
             COOKIE_SECRET: ${COOKIE_SECRET}
-            DB_HOST: 172.245.234.230
+            DB_HOST: ${DB_HOST}
             DB_PORT: ${DB_PORT}
             DB_NAME: ${DB_NAME}
             DB_USERNAME: ${DB_USERNAME}

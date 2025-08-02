@@ -37,10 +37,13 @@ services:
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.vendure-server.rule=Host(`g08o44oc8w4ks0ww84k88c88.greatplainsgrowery.com`)"
-            - "traefik.http.routers.vendure-server.entrypoints=websecure"
+            - "traefik.http.routers.vendure-server.entrypoints=https"
             - "traefik.http.routers.vendure-server.tls=true"
             - "traefik.http.routers.vendure-server.tls.certresolver=letsencrypt"
             - "traefik.http.services.vendure-server.loadbalancer.server.port=3000"
+        networks:
+            - vendure-network
+        restart: unless-stopped
 
     worker:
         build:
@@ -77,7 +80,14 @@ services:
         labels:
             - "traefik.enable=true"
             - "traefik.http.routers.vendure-worker.rule=Host(`iggggksc44g4848sggc8gcow.greatplainsgrowery.com`)"
-            - "traefik.http.routers.vendure-worker.entrypoints=websecure"
+            - "traefik.http.routers.vendure-worker.entrypoints=https"
             - "traefik.http.routers.vendure-worker.tls=true"
             - "traefik.http.routers.vendure-worker.tls.certresolver=letsencrypt"
             - "traefik.http.services.vendure-worker.loadbalancer.server.port=3000"
+        networks:
+            - vendure-network
+        restart: unless-stopped
+
+networks:
+    vendure-network:
+        driver: bridge

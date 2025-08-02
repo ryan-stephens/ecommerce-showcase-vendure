@@ -15,6 +15,15 @@ import path from 'path';
 const IS_DEV = process.env.APP_ENV === 'dev';
 const serverPort = +process.env.PORT || 3000;
 
+// Debug database connection info (remove in production)
+console.log('Database Connection Debug Info:');
+console.log('DB_HOST:', process.env.DB_HOST);
+console.log('DB_PORT:', process.env.DB_PORT);
+console.log('DB_NAME:', process.env.DB_NAME);
+console.log('DB_USERNAME:', process.env.DB_USERNAME);
+console.log('DB_PASSWORD length:', process.env.DB_PASSWORD?.length || 0);
+console.log('DB_SCHEMA:', process.env.DB_SCHEMA);
+
 export const config: VendureConfig = {
     apiOptions: {
         port: serverPort,
@@ -45,7 +54,7 @@ export const config: VendureConfig = {
         // the `synchronize` and `migrations` options.
         synchronize: true,
         migrations: [path.join(__dirname, './migrations/*.+(js|ts)')],
-        logging: false,
+        logging: true, // Changed from false to true for debugging
         database: process.env.DB_NAME,
         schema: process.env.DB_SCHEMA,
         host: process.env.DB_HOST,

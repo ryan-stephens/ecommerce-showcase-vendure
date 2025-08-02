@@ -105,6 +105,73 @@ E-commerce backend built with Vendure framework, deployed via Coolify with Docke
 
 **Status**: ✅ Fixed - Ready for redeployment
 
+### 2025-08-02 - Database Connectivity Issue
+**Issue**: Vendure services deployed but unable to connect to external PostgreSQL database
+**Symptoms**: 
+- Services start but fail to connect to database
+- Database credentials work fine in DataGrip from local machine
+- External database at 172.245.234.230:5432
+
+**Root Cause**: Docker networking configuration preventing containers from accessing external database server
+
+**Solution Applied**:
+1. **Added Docker Network Configuration**:
+   ```yaml
+   networks:
+     vendure-network:
+       driver: bridge
+   ```
+
+2. **Added Network Assignment to Services**:
+   - Both server and worker services now use `vendure-network`
+   - Added `restart: unless-stopped` for better reliability
+
+3. **Created Coolify-specific Environment File**:
+   - `.env.coolify` with production database credentials
+   - Separated from development configuration
+
+**Additional Steps Required**:
+- Ensure Coolify allows external database connections
+- Verify firewall rules allow connections from Coolify server
+- Consider using connection pooling for production
+
+**Status**: ⚠️ Pending - Requires Coolify network configuration
+
+### 2025-08-02 - Password Authentication Failure Update
+**Issue**: PostgreSQL password authentication failed for user "postgres" from Docker containers
+**Error Code**: 28P01 (authentication failed)
+**Symptoms**: 
+- Containers can reach the database server (network connectivity works)
+- Authentication fails with exact same credentials that work in DataGrip
+- Error: "password authentication failed for user 'postgres'"
+
+**Root Cause Analysis**:
+- Database connection established (no network issues)
+- Password contains special characters that may need escaping in Docker environment
+- Coolify environment variable handling may differ from local Docker
+
+**Solutions Applied**:
+1. **Added Debug Logging**:
+   - Added database connection debug info to vendure-config.ts
+   - Enabled TypeORM logging for connection troubleshooting
+   - Added password length verification (without exposing actual password)
+
+2. **Created Multiple Environment File Versions**:
+   - `.env.coolify`: Password wrapped in quotes
+   - `.env.coolify.debug`: Password without quotes for testing
+
+3. **Environment Variable Escaping Options**:
+   - Quoted password: `"N5hi565wA29b39YB8W9x5GqoqepBdvGMps62vnLS1aTfGVedugjyisuQquY9eqik"`
+   - Unquoted password: `N5hi565wA29b39YB8W9x5GqoqepBdvGMps62vnLS1aTfGVedugjyisuQquY9eqik`
+
+**Next Steps Required**:
+1. Check Coolify logs for environment variable values
+2. Try different password escaping methods
+3. Verify PostgreSQL server allows connections from Coolify server IP
+4. Consider creating a new database user with simpler password for testing
+
+**Status**: 🔍 Investigating - Password authentication from Docker containers
+
 ## Current Goals
 1. **Immediate**: Validate SSL certificate issuance after redeployment
 2. **Short-term**: Ensure storefront can connect to backend APIs

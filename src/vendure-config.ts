@@ -98,9 +98,10 @@ export const config: VendureConfig = {
         }),
         AdminUiPlugin.init({
             route: 'admin',
-            port: serverPort + 2,
             adminUiConfig: {
-                apiPort: serverPort,
+                apiHost: 'auto',
+                adminApiPath: 'admin-api',
+                shopApiPath: 'shop-api',
             },
         }),
     ],

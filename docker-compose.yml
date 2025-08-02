@@ -34,6 +34,13 @@ services:
             DB_PASSWORD: ${DB_PASSWORD}
             SUPERADMIN_USERNAME: ${SUPERADMIN_USERNAME}
             SUPERADMIN_PASSWORD: ${SUPERADMIN_PASSWORD}
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.vendure-server.rule=Host(`g08o44oc8w4ks0ww84k88c88.greatplainsgrowery.com`)"
+            - "traefik.http.routers.vendure-server.entrypoints=websecure"
+            - "traefik.http.routers.vendure-server.tls=true"
+            - "traefik.http.routers.vendure-server.tls.certresolver=letsencrypt"
+            - "traefik.http.services.vendure-server.loadbalancer.server.port=3000"
 
     worker:
         build:
@@ -69,7 +76,8 @@ services:
             SUPERADMIN_PASSWORD: ${SUPERADMIN_PASSWORD}
         labels:
             - "traefik.enable=true"
-            - "traefik.http.routers.vendure.entrypoints=https"
-            - "traefik.http.routers.vendure.rule=Host(`vendure.greatplainsgrowery.com`)"
-            - "traefik.http.routers.vendure.tls.certresolver=letsencrypt"
-            - "traefik.http.services.vendure.loadbalancer.server.port=3000"
+            - "traefik.http.routers.vendure-worker.rule=Host(`iggggksc44g4848sggc8gcow.greatplainsgrowery.com`)"
+            - "traefik.http.routers.vendure-worker.entrypoints=websecure"
+            - "traefik.http.routers.vendure-worker.tls=true"
+            - "traefik.http.routers.vendure-worker.tls.certresolver=letsencrypt"
+            - "traefik.http.services.vendure-worker.loadbalancer.server.port=3000"

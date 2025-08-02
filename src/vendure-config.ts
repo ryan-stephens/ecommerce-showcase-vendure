@@ -15,15 +15,6 @@ import path from 'path';
 const IS_DEV = process.env.APP_ENV === 'dev';
 const serverPort = +process.env.PORT || 3000;
 
-// Debug database connection info (remove in production)
-console.log('Database Connection Debug Info:');
-console.log('DB_HOST:', process.env.DB_HOST);
-console.log('DB_PORT:', process.env.DB_PORT);
-console.log('DB_NAME:', process.env.DB_NAME);
-console.log('DB_USERNAME:', process.env.DB_USERNAME);
-console.log('DB_PASSWORD length:', process.env.DB_PASSWORD?.length || 0);
-console.log('DB_SCHEMA:', process.env.DB_SCHEMA);
-
 export const config: VendureConfig = {
     apiOptions: {
         port: serverPort,
@@ -98,11 +89,11 @@ export const config: VendureConfig = {
         }),
         AdminUiPlugin.init({
             route: 'admin',
+            port: serverPort + 2,
             adminUiConfig: {
                 apiHost: IS_DEV ? 'http://localhost' : 'https://g08o44oc8w4ks0ww84k88c88.greatplainsgrowery.com',
                 apiPort: IS_DEV ? serverPort : undefined,
                 adminApiPath: 'admin-api',
-                shopApiPath: 'shop-api',
             },
         }),
     ],

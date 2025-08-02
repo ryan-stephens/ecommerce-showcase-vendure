@@ -99,7 +99,8 @@ export const config: VendureConfig = {
         AdminUiPlugin.init({
             route: 'admin',
             adminUiConfig: {
-                apiHost: 'auto',
+                apiHost: IS_DEV ? 'http://localhost' : 'https://g08o44oc8w4ks0ww84k88c88.greatplainsgrowery.com',
+                apiPort: IS_DEV ? serverPort : undefined,
                 adminApiPath: 'admin-api',
                 shopApiPath: 'shop-api',
             },

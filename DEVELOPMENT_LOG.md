@@ -172,6 +172,51 @@ E-commerce backend built with Vendure framework, deployed via Coolify with Docke
 
 **Status**: 🔍 Investigating - Password authentication from Docker containers
 
+### 2025-08-02 - Successful Production Deployment Complete! 🎉
+**Achievement**: Full Vendure backend deployment with SSL certificates working
+**Resolution Summary**:
+- ✅ **Database Connectivity**: Fixed by setting environment variables in Coolify dashboard
+- ✅ **SSL/HTTPS**: Fixed Traefik entrypoint configuration and Cloudflare SSL mode
+- ✅ **Admin UI/API Routing**: Fixed AdminUiPlugin configuration for reverse proxy
+
+**Final Working Configuration**:
+```typescript
+AdminUiPlugin.init({
+    route: 'admin',
+    port: serverPort + 2,
+    adminUiConfig: {
+        apiHost: IS_DEV ? 'http://localhost' : 'https://g08o44oc8w4ks0ww84k88c88.greatplainsgrowery.com',
+        apiPort: IS_DEV ? serverPort : undefined,
+        adminApiPath: 'admin-api',
+    },
+})
+```
+
+**Live URLs**:
+- Admin Panel: https://g08o44oc8w4ks0ww84k88c88.greatplainsgrowery.com/admin
+- Shop API: https://g08o44oc8w4ks0ww84k88c88.greatplainsgrowery.com/shop-api
+- Worker Service: https://iggggksc44g4848sggc8gcow.greatplainsgrowery.com
+
+**Status**: ✅ **PRODUCTION READY** - All services operational with SSL
+
+### 2025-08-02 - SSL Certificate Renewal Process Documented 🔒
+**Issue**: Cloudflare Full (Strict) mode preventing Let's Encrypt certificate renewal
+**Solution**: Temporary proxy bypass method for certificate renewal
+
+**Successful Renewal Process**:
+1. **Disable Cloudflare Proxy**: Set DNS records to "DNS Only" (gray cloud)
+2. **Reduce SSL Strictness**: Change Cloudflare SSL mode to "Full"
+3. **Force Certificate Renewal**: Restart Traefik proxy in Coolify
+4. **Wait for Renewal**: Allow 5-10 minutes for new certificates
+5. **Re-enable Proxy**: Set DNS records back to "Proxied" (orange cloud)
+6. **Enable Strict Mode**: Change Cloudflare SSL mode to "Full (Strict)"
+
+**Result**: ✅ Full (Strict) SSL mode working with fresh Let's Encrypt certificates
+
+**Future Reference**: Use this process whenever certificate renewal fails with Full (Strict) mode. Consider implementing DNS-01 challenge for automated renewal without proxy conflicts.
+
+**Status**: ✅ **MAXIMUM SECURITY** - Full (Strict) SSL operational
+
 ## Current Goals
 1. **Immediate**: Validate SSL certificate issuance after redeployment
 2. **Short-term**: Ensure storefront can connect to backend APIs

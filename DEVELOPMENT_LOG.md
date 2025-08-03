@@ -199,6 +199,31 @@ AdminUiPlugin.init({
 
 **Status**: ✅ **PRODUCTION READY** - All services operational with SSL
 
+### 2025-08-02 - 504 Gateway Timeout Resolution 🔧
+**Issue**: Vendure backend returning 504 Gateway Timeout after storefront deployment
+**Root Cause**: Custom Docker network configuration (`vendure-network`) incompatible with Coolify's automatic networking
+
+**Critical Discovery**: Coolify deployments should NEVER use custom Docker networks in docker-compose.yml files. Custom networks prevent Traefik from properly routing traffic to containers.
+
+**Solution Applied**:
+1. **Removed custom network references** from both `server` and `worker` services:
+   - Deleted `networks: - vendure-network` from service definitions
+2. **Removed entire networks section** from docker-compose.yml:
+   - Deleted `networks: vendure-network: driver: bridge` configuration
+3. **Let Coolify handle networking automatically** - no custom network configuration needed
+
+**Result**: ✅ Immediate resolution of 504 Gateway Timeout errors
+- Admin panel accessible: https://g08o44oc8w4ks0ww84k88c88.greatplainsgrowery.com/admin
+- Shop API functional: https://g08o44oc8w4ks0ww84k88c88.greatplainsgrowery.com/shop-api
+- Storefront successfully connects to backend APIs
+
+**Future Reference**: For ANY Coolify deployment experiencing 504 Gateway Timeout:
+1. Check for custom Docker networks in docker-compose.yml
+2. Remove ALL custom network configurations
+3. Redeploy - Coolify's automatic networking will handle everything
+
+**Status**: ✅ **PRODUCTION READY** - Full e-commerce platform operational
+
 ### 2025-08-02 - SSL Certificate Renewal Process Documented 🔒
 **Issue**: Cloudflare Full (Strict) mode preventing Let's Encrypt certificate renewal
 **Solution**: Temporary proxy bypass method for certificate renewal

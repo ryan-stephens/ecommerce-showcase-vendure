@@ -3,7 +3,7 @@
 ## Project Overview
 E-commerce backend built with Vendure framework, deployed via Coolify with Docker containers on VPS.
 
-## 🔧 Development Rules & Standards
+## Development Rules & Standards
 
 ### Code Quality Standards
 - **TypeScript**: Strict mode enabled, no `any` types without justification
@@ -223,6 +223,105 @@ AdminUiPlugin.init({
 3. Redeploy - Coolify's automatic networking will handle everything
 
 **Status**: ✅ **PRODUCTION READY** - Full e-commerce platform operational
+
+### 2025-08-02 - Official Test Data Population Process 📦
+**Objective**: Populate empty Vendure database with professional test data using official Vendure assets
+**Method**: Official `@vendure/create` test data import process
+
+**Prerequisites**:
+- Empty database schema (tables can exist but should be empty)
+- Running Vendure deployment with database connectivity
+- Access to container terminal (via Coolify or Docker)
+
+**Implementation Steps**:
+
+1. **Install @vendure/create dependency**:
+   ```json
+   // In package.json devDependencies
+   "@vendure/create": "3.4.0"
+   ```
+
+2. **Create population script** (`src/populate-db.ts`):
+   ```typescript
+   import { populate } from '@vendure/core/cli';
+   import { bootstrap } from '@vendure/core';
+   import { config } from './vendure-config';
+   import * as path from 'path';
+
+   const populateConfig = {
+       ...config,
+       // Use non-conflicting port (production: 3000, storefront: 3001, populate: 3005)
+       apiOptions: {
+           ...config.apiOptions,
+           port: 3005,
+       },
+       // Enable asset importing from @vendure/create
+       importExportOptions: {
+           importAssetsDir: path.join(
+               require.resolve('@vendure/create/assets/products.csv'),
+               '../images'
+           ),
+       },
+       // Ensure database synchronization during population
+       dbConnectionOptions: {
+           ...config.dbConnectionOptions,
+           synchronize: true
+       }
+   };
+
+   const app = await populate(
+       () => bootstrap(populateConfig),
+       require('@vendure/create/assets/initial-data.json'),
+       require.resolve('@vendure/create/assets/products.csv')
+   );
+   ```
+
+3. **Add package.json script**:
+   ```json
+   "scripts": {
+       "populate": "ts-node ./src/populate-db.ts"
+   }
+   ```
+
+4. **Execute population process**:
+   ```bash
+   # In container terminal (via Coolify terminal access)
+   npm install  # Install @vendure/create
+   npm run populate  # Run population script
+   ```
+
+**Key Technical Details**:
+- **Port Configuration**: Uses port 3005 to avoid conflicts with running services
+- **Asset Management**: Automatically imports product images from @vendure/create
+- **Database Sync**: Enables synchronize: true for schema updates during import
+- **Official Data**: Uses Vendure's professional test catalog (same as demos)
+
+**Results After Successful Population**:
+- ✅ **Complete product catalog** with professional product images
+- ✅ **Realistic e-commerce data** (countries, taxes, shipping, payments)
+- ✅ **Product collections** and categories properly configured
+- ✅ **Administrator roles** and permissions established
+- ✅ **Inventory tracking** and pricing configured
+- ✅ **Search functionality** (may require manual index rebuild)
+
+**Post-Population Tasks**:
+1. **Rebuild search index** in Admin UI: Products → Three dots → Rebuild index
+2. **Verify admin access**: https://g08o44oc8w4ks0ww84k88c88.greatplainsgrowery.com/admin
+3. **Test storefront**: https://zwkwg40kg4ww0gsc0ggkk40o.greatplainsgrowery.com/
+4. **Customize data** as needed for specific business requirements
+
+**Troubleshooting Notes**:
+- **Port conflicts**: Ensure unique port for population script (avoid 3000, 3001)
+- **Database access**: Verify database connection settings in vendure-config.ts
+- **Asset loading**: @vendure/create must be installed as devDependency
+- **Container access**: Use Coolify terminal feature for command execution
+
+**Future Maintenance**:
+- **Data reset**: Drop all tables and re-run population script
+- **Custom data**: Replace with custom initial-data.ts and products.csv as needed
+- **Production data**: Transition from test data to real product catalog
+
+**Status**: ✅ **COMPLETE** - Professional test data successfully imported
 
 ### 2025-08-02 - SSL Certificate Renewal Process Documented 🔒
 **Issue**: Cloudflare Full (Strict) mode preventing Let's Encrypt certificate renewal

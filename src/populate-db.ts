@@ -20,6 +20,11 @@ async function populateDatabase() {
         // Create a modified config for population
         const populateConfig = {
             ...config,
+            // Use port 3005 to avoid conflict with running server on port 3000
+            apiOptions: {
+                ...config.apiOptions,
+                port: 3005,
+            },
             // Enable asset importing from @vendure/create
             importExportOptions: {
                 importAssetsDir: path.join(
@@ -51,7 +56,7 @@ async function populateDatabase() {
         console.log('   - Administrator roles and permissions');
         console.log('');
         console.log('🎉 You can now access your admin panel and see the populated data!');
-        console.log('Admin URL: https://g08o44oc8w4ks0ww84k88c88.greatplainsgrowery.com/admin');
+        console.log('Admin URL: https://g08o44oc8w4ks0ww84k88c88.greatplainsgrowery.com:3001/admin');
         console.log('');
         console.log('📝 Note: You may need to rebuild the search index in the admin UI');
         console.log('   Go to Products → Click the three dots next to search → Rebuild index');

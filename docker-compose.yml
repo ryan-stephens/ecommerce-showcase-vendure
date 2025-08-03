@@ -41,8 +41,6 @@ services:
             - "traefik.http.routers.vendure-server.tls=true"
             - "traefik.http.routers.vendure-server.tls.certresolver=letsencrypt"
             - "traefik.http.services.vendure-server.loadbalancer.server.port=3000"
-        networks:
-            - vendure-network
         restart: unless-stopped
 
     worker:
@@ -84,10 +82,4 @@ services:
             - "traefik.http.routers.vendure-worker.tls=true"
             - "traefik.http.routers.vendure-worker.tls.certresolver=letsencrypt"
             - "traefik.http.services.vendure-worker.loadbalancer.server.port=3000"
-        networks:
-            - vendure-network
         restart: unless-stopped
-
-networks:
-    vendure-network:
-        driver: bridge
